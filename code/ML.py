@@ -28,7 +28,7 @@ And lastly labels, which is what we want to predict
 #Next we want to parse the dataset
 
 def parse_csv(line):
-    example_defaults = [[0.],[0.],[0.],[0.],[0.]] #This sets the field typres
+    example_defaults = [[0.],[0.],[0.],[0.],[0.]] #This sets the field types
     parsed_line = tf.defcode_csv(line, example_defaults)
     #Remember that the first 4 fields of the data are features
     features = tf.reshape(parsed_line[:-1], shape = (4,))
