@@ -1,10 +1,13 @@
+from __future__ import absolute_import, division, print_function
 import tensorflow as tf
 import os
 import matplotlib.pyplot as plt
 import tensorflow.contrib.eager as tfe
 
 
-#tf.enable_eager_execution()
+tfe.enable_eager_execution()
+print("")
+print("-------------------------------------------------------------------")
 
 print("TensorFlow version: {}".format(tf.VERSION))
 #print("Eager execution: {}".format(tf.executing_eagerly()))
@@ -29,7 +32,7 @@ And lastly labels, which is what we want to predict
 
 def parse_csv(line):
     example_defaults = [[0.],[0.],[0.],[0.],[0.]] #This sets the field types
-    parsed_line = tf.defcode_csv(line, example_defaults)
+    parsed_line = tf.decode_csv(line, example_defaults)
     #Remember that the first 4 fields of the data are features
     features = tf.reshape(parsed_line[:-1], shape = (4,))
     #Last field is the label
@@ -38,3 +41,13 @@ def parse_csv(line):
 
 #The next part is to create the training dataset
 
+train_dataset = tf.data.TextLineDataset(train_dataset_fp)
+train_dataset = train_dataset.skip(1)            #This skips the header row
+train_dataset = train_dataset.map(parse_csv)     #This parses each row 
+train_dataset = train_dataset.shuffle(buffer_size=1000) #randomize
+train_dataset = train_dataset.batch(32)
+
+# View a singlle entry
+features, label =  tfe.Iterator(train_dataset).next()
+print("example features: ", features[0])
+print("example label: ", label[0])
